@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.filechangepdf"
-        minSdk 31
+        minSdk 26
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -44,4 +44,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation 'com.itextpdf:itextpdf:5.5.10'
+    implementation 'com.itextpdf:itextpdf:5.5.10'
+    implementation 'com.itextpdf:itext7-core:7.1.8'
 }
