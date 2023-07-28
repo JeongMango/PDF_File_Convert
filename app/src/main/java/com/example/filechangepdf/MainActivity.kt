@@ -53,25 +53,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /*fun saveConstraintLayoutAsPdf(context: Context, constraintLayout: ConstraintLayout, filename: String) {
-        val pdfDocument = PdfDocument()
-        val pageInfo = PdfDocument.PageInfo.Builder(constraintLayout.width, constraintLayout.height, 1).create()
-        val page = pdfDocument.startPage(pageInfo)
-        val canvas = page.canvas
-        val density = context.resources.displayMetrics.density
-        val scaledBitmap = Bitmap.createScaledBitmap(getBitmapFromView(constraintLayout), constraintLayout.width, constraintLayout.height, true)
-        canvas.drawBitmap(scaledBitmap, 0f, 0f, null)
-        pdfDocument.finishPage(page)
-
-        val file = File(getPdfDirectory(context), "$filename.pdf")
-        try {
-            val fileOutputStream = FileOutputStream(file)
-            pdfDocument.writeTo(fileOutputStream)
-            pdfDocument.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }*/
 
     private fun getBitmapFromView(view: View): Bitmap {
         val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
