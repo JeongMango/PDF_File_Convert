@@ -25,23 +25,32 @@ class MainActivity : AppCompatActivity() {
 
         btnClick.setOnClickListener {
             val constraintLayout = findViewById<ConstraintLayout>(R.id.layout)
-//            val filename = "my_constraint_layout"
-//            saveConstraintLayoutAsPdf(this, constraintLayout, filename)
             saveConstraintLayoutAsPdf(this, constraintLayout)
         }
     }
-    fun saveConstraintLayoutAsPdf(context: Context, constraintLayout: ConstraintLayout) {
+
+    //pdf파일명을 지정해서 pdf파일을 저장한곳에서 가져오는 부분
+    //retrofit통신으로 multipart형식으로 보낼때 필요
+    //RequestBody로 만들어서 보내야함
+    //사진과 동일
+    private fun getPdfFile(){
+
+        val pdfDirectory = getPdfDirectory(this)
+        val selectedPdfFile = File(pdfDirectory, "내가 파일명을 지정하는부분.pdf")
+
+    }
+    private fun saveConstraintLayoutAsPdf(context: Context, constraintLayout: ConstraintLayout) {
         val pdfDocument = PdfDocument()
         val pageInfo = PdfDocument.PageInfo.Builder(constraintLayout.width, constraintLayout.height, 1).create()
         val page = pdfDocument.startPage(pageInfo)
         val canvas = page.canvas
-        val density = context.resources.displayMetrics.density
+//        val density = context.resources.displayMetrics.density
         val scaledBitmap = Bitmap.createScaledBitmap(getBitmapFromView(constraintLayout), constraintLayout.width, constraintLayout.height, true)
         canvas.drawBitmap(scaledBitmap, 0f, 0f, null)
         pdfDocument.finishPage(page)
 
         val currentTime = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val filename = "my_constraint_layout_$currentTime.pdf"
+        val filename = "$currentTime.pdf"
 
         val file = File(getPdfDirectory(context), filename)
         try {
