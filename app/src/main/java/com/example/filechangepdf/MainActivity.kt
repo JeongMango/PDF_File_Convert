@@ -10,6 +10,7 @@ import android.os.Environment
 import android.view.View
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.RecyclerView
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -33,19 +34,23 @@ class MainActivity : AppCompatActivity() {
     //retrofit통신으로 multipart형식으로 보낼때 필요
     //RequestBody로 만들어서 보내야함
     //사진과 동일
-    private fun getPdfFile(){
-
+    private fun getPdfFile() {
         val pdfDirectory = getPdfDirectory(this)
         val selectedPdfFile = File(pdfDirectory, "내가 파일명을 지정하는부분.pdf")
-
     }
+
     private fun saveConstraintLayoutAsPdf(context: Context, constraintLayout: ConstraintLayout) {
         val pdfDocument = PdfDocument()
         val pageInfo = PdfDocument.PageInfo.Builder(constraintLayout.width, constraintLayout.height, 1).create()
         val page = pdfDocument.startPage(pageInfo)
         val canvas = page.canvas
 //        val density = context.resources.displayMetrics.density
-        val scaledBitmap = Bitmap.createScaledBitmap(getBitmapFromView(constraintLayout), constraintLayout.width, constraintLayout.height, true)
+        val scaledBitmap = Bitmap.createScaledBitmap(
+            getBitmapFromView(constraintLayout),
+            constraintLayout.width,
+            constraintLayout.height,
+            true
+        )
         canvas.drawBitmap(scaledBitmap, 0f, 0f, null)
         pdfDocument.finishPage(page)
 
@@ -62,7 +67,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private fun getBitmapFromView(view: View): Bitmap {
         val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
@@ -77,4 +81,38 @@ class MainActivity : AppCompatActivity() {
         }
         return directory
     }
+
+
+    //리싸이클러뷰 일경우 추가
+    private fun saveRecyclerViewAsPdf(context: Context, recyclerView: RecyclerView) {
+        val pdfDocument = PdfDocument()
+        val pageInfoBuilder = PdfDocument.PageInfo.Builder(
+            recyclerView.width,
+            recyclerView.height,
+            recyclerView.adapter?.itemCount ?: 1
+        )
+
+        for (i in 0 until (recyclerView.adapter?.itemCount ?: 1)) {
+            val page = pdfDocument.startPage(pageInfoBuilder.create())
+
+            val canvas = page.canvas
+            canvas.translate(0f, -recyclerView.height * i.toFloat())
+            recyclerView.draw(canvas)
+
+            pdfDocument.finishPage(page)
+        }
+
+        val currentTime = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val filename = "$currentTime.pdf"
+
+        val file = File(getPdfDirectory(context), filename)
+        try {
+            val fileOutputStream = FileOutputStream(file)
+            pdfDocument.writeTo(fileOutputStream)
+            pdfDocument.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
 }
